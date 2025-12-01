@@ -3,134 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>布偶貓幸運拉霸機</title>
+    <title>布偶貓迷你拉霸機</title>
     <style>
         :root {
-            --primary-color: #fce4ec; /* 貓咪粉白 */
-            --secondary-color: #f06292; /* 肉球粉 */
-            --accent-color: #ffd700; /* 金色燈光 */
+            --primary-color: #fce4ec;
+            --secondary-color: #f06292;
+            --accent-color: #ffd700;
             --machine-bg: #2d3436;
             --text-color: #636e72;
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #ffeaa7;
+            background-color: transparent; /* 背景透明，方便嵌入 */
+            margin: 0;
+            padding: 0;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start; /* 改為靠上對齊，適應長條型容器 */
             min-height: 100vh;
-            margin: 0;
         }
 
-        /* 遊戲主容器 */
+        /* 遊戲主容器 - 支援小尺寸 */
         .game-container {
             background-color: white;
-            padding: 2rem;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            padding: 10px; /* 縮小內距 */
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             text-align: center;
-            max-width: 500px;
-            width: 90%;
-            border: 5px solid var(--secondary-color);
-            position: relative;
+            width: 100%; 
+            max-width: 400px; /* 最大寬度限制 */
+            min-width: 140px; /* 最小支援到 140-150px */
+            border: 3px solid var(--secondary-color);
+            box-sizing: border-box; /* 確保 padding 不會撐大寬度 */
+            margin: 10px;
         }
 
         /* 吉祥物區域 */
         .mascot {
-            font-size: 4rem;
-            margin-bottom: -10px;
-            position: relative;
-            z-index: 10;
+            font-size: 2.5rem; /* 縮小 */
+            margin-bottom: -5px;
             animation: float 3s ease-in-out infinite;
+            line-height: 1;
         }
         
         .mascot-text {
             font-weight: bold;
             color: var(--secondary-color);
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            white-space: nowrap; /* 不換行 */
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         /* 拉霸機外殼 */
         .slot-machine {
             background-color: var(--machine-bg);
-            padding: 20px;
-            border-radius: 15px;
-            border: 4px solid #b2bec3;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
-            margin-bottom: 20px;
-            position: relative;
+            padding: 8px; /* 極窄內距 */
+            border-radius: 8px;
+            border: 2px solid #b2bec3;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+            margin-bottom: 10px;
         }
 
         /* 顯示視窗 */
         .window {
             background-color: white;
-            height: 100px;
-            border-radius: 10px;
+            height: 60px; /* 高度縮小 */
+            border-radius: 6px;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 2rem;
+            font-size: 1.2rem; /* 字體縮小 */
             font-weight: bold;
             color: var(--machine-bg);
-            border: 3px inset #dfe6e9;
+            border: 2px inset #dfe6e9;
             overflow: hidden;
-            position: relative;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+            word-break: break-all; /* 防止長文字撐開 */
+            padding: 0 5px;
         }
 
         /* 燈泡裝飾 */
         .lights {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 10px;
+            margin: 5px 0;
         }
         .light {
-            width: 15px;
-            height: 15px;
+            width: 8px; /* 燈泡縮小 */
+            height: 8px;
             background-color: #444;
             border-radius: 50%;
-            border: 2px solid #222;
+            border: 1px solid #222;
         }
         .light.on {
             background-color: var(--accent-color);
-            box-shadow: 0 0 10px var(--accent-color);
+            box-shadow: 0 0 5px var(--accent-color);
         }
 
         /* 控制區 */
         .controls {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 8px;
         }
 
         textarea {
             width: 100%;
-            height: 80px;
-            padding: 10px;
+            height: 60px;
+            padding: 5px;
             box-sizing: border-box;
-            border: 2px solid #dfe6e9;
-            border-radius: 10px;
-            resize: none;
-            font-size: 1rem;
+            border: 1px solid #dfe6e9;
+            border-radius: 6px;
+            resize: vertical;
+            font-size: 0.85rem;
         }
 
         button {
             background-color: var(--secondary-color);
             color: white;
             border: none;
-            padding: 15px 30px;
-            font-size: 1.2rem;
-            border-radius: 50px;
+            padding: 10px 5px; /* 左右內距縮小 */
+            font-size: 1rem;
+            width: 100%;
+            border-radius: 8px;
             cursor: pointer;
-            transition: transform 0.1s, box-shadow 0.1s;
-            box-shadow: 0 5px 0 #c2185b;
+            box-shadow: 0 3px 0 #c2185b;
             font-weight: bold;
+            line-height: 1.2;
         }
 
         button:active {
-            transform: translateY(5px);
+            transform: translateY(3px);
             box-shadow: 0 0 0 #c2185b;
         }
 
@@ -140,16 +145,25 @@
             cursor: not-allowed;
         }
 
+        .result-message {
+            margin-top: 8px;
+            font-size: 0.9rem;
+            color: var(--secondary-color);
+            font-weight: bold;
+            min-height: 1.2em;
+            line-height: 1.4;
+        }
+
         /* 動畫特效 */
         @keyframes float {
             0% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-10px) rotate(5deg); }
+            50% { transform: translateY(-5px) rotate(5deg); }
             100% { transform: translateY(0px) rotate(0deg); }
         }
 
         @keyframes blink {
             0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
+            50% { opacity: 0.5; }
         }
 
         .winner-bg {
@@ -157,22 +171,23 @@
             background-color: #fff700 !important;
             color: #d63031 !important;
         }
-        
-        .result-message {
-            margin-top: 15px;
-            font-size: 1.5rem;
-            color: var(--secondary-color);
-            font-weight: bold;
-            min-height: 1.5em;
-        }
 
+        /* 針對極小螢幕的微調 (小於 200px) */
+        @media (max-width: 200px) {
+            .mascot { font-size: 2rem; }
+            .mascot-text { font-size: 0.9rem; }
+            .window { font-size: 1rem; height: 50px; }
+            button { font-size: 0.9rem; padding: 8px 0; }
+            .light { width: 6px; height: 6px; }
+            textarea { font-size: 0.75rem; }
+        }
     </style>
 </head>
 <body>
 
 <div class="game-container">
     <div class="mascot">🐱</div>
-    <div class="mascot-text">布偶貓幸運機</div>
+    <div class="mascot-text">幸運布偶貓</div>
 
     <div class="slot-machine">
         <div class="lights">
@@ -180,10 +195,10 @@
         </div>
         
         <div class="window" id="slotWindow">
-            準備開始
+            READY
         </div>
         
-        <div class="lights" style="margin-top:10px;">
+        <div class="lights" style="margin-top:5px;">
             <div class="light"></div><div class="light"></div><div class="light"></div><div class="light"></div><div class="light"></div>
         </div>
     </div>
@@ -191,16 +206,10 @@
     <div class="result-message" id="resultMsg"></div>
 
     <div class="controls">
-        <label for="optionsInput" style="text-align:left; font-size:0.9rem; color:#666;">在此輸入選項 (用換行分隔):</label>
-        <textarea id="optionsInput" placeholder="範例：
-中獎
-沒中
-再一次">火鍋
+        <textarea id="optionsInput" placeholder="輸入選項&#10;換行分隔">火鍋
 燒烤
-壽司
-拉麵
-披薩</textarea>
-        <button id="spinBtn" onclick="startSpin()">👇 拉動拉霸機 👇</button>
+壽司</textarea>
+        <button id="spinBtn" onclick="startSpin()">GO!</button>
     </div>
 </div>
 
@@ -215,60 +224,47 @@
     function startSpin() {
         if (isSpinning) return;
 
-        // 1. 獲取並處理輸入
         const input = document.getElementById('optionsInput').value;
-        // 將輸入文字依據換行切割，並過濾掉空白行
         const options = input.split('\n').filter(item => item.trim() !== '');
 
         if (options.length < 2) {
-            alert("請至少輸入兩個選項才能開始遊玩喔！(記得按 Enter 換行)");
+            alert("請至少輸入兩個選項！");
             return;
         }
 
-        // 重置狀態
         isSpinning = true;
         spinBtn.disabled = true;
-        spinBtn.innerText = "轉動中...";
+        spinBtn.innerText = "..."; // 簡化文字以適應小寬度
         slotWindow.classList.remove('winner-bg');
         resultMsg.innerText = "";
         
-        // 關閉燈光
         lights.forEach(l => l.classList.remove('on'));
 
         let counter = 0;
-        let speed = 50; // 初始速度 (毫秒)
+        let speed = 50; 
 
-        // 2. 轉動動畫邏輯
-        // 先快速隨機跳動
         spinInterval = setInterval(() => {
             const randomIndex = Math.floor(Math.random() * options.length);
             slotWindow.innerText = options[randomIndex];
             counter++;
         }, speed);
 
-        // 3. 停止與減速邏輯 (模擬拉霸機停下的感覺)
-        // 轉動 2 秒後停止
         setTimeout(() => {
             clearInterval(spinInterval);
             
-            // 決定最終結果
             const finalIndex = Math.floor(Math.random() * options.length);
             const finalResult = options[finalIndex];
             
-            // 減速特效：再跳動幾次最後停在結果上
             let slowdownCount = 0;
-            let maxSlowdown = 10;
+            let maxSlowdown = 8; // 減少減速次數，讓節奏更快
             
             function slowdown() {
                 if (slowdownCount < maxSlowdown) {
-                    // 隨機顯示
                     const rand = Math.floor(Math.random() * options.length);
                     slotWindow.innerText = options[rand];
                     slowdownCount++;
-                    // 每次間隔拉長
                     setTimeout(slowdown, 50 + (slowdownCount * 40));
                 } else {
-                    // --- 最終停止 ---
                     showResult(finalResult);
                 }
             }
@@ -281,16 +277,11 @@
         slotWindow.innerText = winner;
         isSpinning = false;
         spinBtn.disabled = false;
-        spinBtn.innerText = "👇 拉動拉霸機 👇";
+        spinBtn.innerText = "GO!"; // 重置按鈕文字
         
-        // 閃燈特效
         slotWindow.classList.add('winner-bg');
-        
-        // 燈泡全亮
         lights.forEach(l => l.classList.add('on'));
-        
-        // 顯示文字
-        resultMsg.innerText = `✨ 選中：${winner}！ ✨`;
+        resultMsg.innerText = `✨ ${winner}`; // 簡化結果文字
     }
 </script>
 
